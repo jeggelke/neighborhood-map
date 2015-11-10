@@ -1,0 +1,80 @@
+html, body {
+   height: 100%;
+}
+
+.wrapper, .row {
+   height: 100%;
+   margin-left:0;
+   margin-right:0;
+}
+
+#map-canvas,
+.map-container {
+  height: 100%;
+  margin: 0px;
+  padding: 0px
+}
+
+#sidebar {
+  background-color: #423F3A;
+  color: #fff;
+}
+
+a {
+  color:#222222;
+}
+
+.wrapper, .row {
+   height: 100%;
+   margin-left:0;
+   margin-right:0;
+}
+
+.wrapper:before, .wrapper:after,
+.column:before, .column:after {
+    content: "";
+    display: table;
+}
+
+.wrapper:after,
+.column:after {
+    clear: both;
+}
+
+.column {
+    height: 100%;
+    overflow: auto;
+    *zoom:1;
+}
+
+.column .padding {
+    padding: 20px;
+}
+
+.box {
+  	bottom: 0; /* increase for footer use */
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+/* center and adjust the sidebar contents on smaller devices */
+@media (max-width: 768px) {
+  #sidebar {
+    text-align:center;
+    margin:0 auto;
+    margin-top:30px;
+    font-size:26px;
+  }
+}
+
+/* override bootstrap */
+.container-fluid {
+  padding: 0;
+}
+
+.no-side-padding {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}

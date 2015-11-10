@@ -1,1 +1,26 @@
-<html></html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Neighborhood map</title>
+    <link rel="stylesheet" href="css/master.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" charset="utf-8">
+    <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="js/map.js" charset="utf-8"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  </head>
+  <body>
+<div class="container-fluid box">
+    <div class="row">
+    <div class="column col-xs-3 text-center" id="sidebar">
+      <h3>This is the sidebar</h3>
+    </div>
+    <div class="map-container column col-xs-9 no-side-padding">
+      <div class="map-canvas" id="map-canvas"></div>
+    </div>
+  </div>
+</div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPptS2lsMK0rAcxj3R3urgPO-Sq12gZcw&callback=initMap"></script>
+  </body>
+</html>
