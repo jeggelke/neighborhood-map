@@ -1,5 +1,6 @@
 //declare api keys
 var googleApiKey = 'AIzaSyCPptS2lsMK0rAcxj3R3urgPO-Sq12gZcw';
+var streetApiKey = 'AIzaSyCfGdY1eZFJXRi5T-18TrfKrSVjN9k9LOc';
 
 //declare neighborhood
 var myNeighborhood = 'Brooklyn Heights, Brooklyn, NY';
@@ -44,8 +45,10 @@ function placeMarkers(results, status, i) {
       });
       coolPlaces[i]['marker'] = marker;
       infowindow = new google.maps.InfoWindow();
+      var placeLatLng = coolPlaces[i]['lat'] + ', ' + coolPlaces[i]['lng'];
+      var streetViewUrl = 'https://maps.googleapis.com/maps/api/streetview?size=300x200&location=' + placeLatLng + '&key=' + streetApiKey;
       marker.addListener('click', function() {
-        var infoContent = coolPlaces[i].name;
+        var infoContent = coolPlaces[i].name + '<br><img src="' + streetViewUrl + '">' ;
         changeInfoWindow(marker, infoContent);
         toggleBounce(marker);
       });

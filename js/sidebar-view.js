@@ -37,7 +37,7 @@ var SidebarModel = function() {
     self.placeList([]);
     // Search through object - http://stackoverflow.com/a/5288882/3083666
     $.each(coolPlaces, function(i, v) {
-          if (v.name.search(new RegExp(self.filterParameter())) != -1) {
+          if (v.name.toLowerCase().search(new RegExp(self.filterParameter().toLowerCase())) != -1) {
               self.placeList.push(new Place(v));
               coolPlaces[i]['visible'] = true;
               return;
