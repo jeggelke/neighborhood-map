@@ -19,7 +19,7 @@ function initMap(address, callback) {
     queryGooglePlaces(e.name, placeMarkers, i);
   })
 
-window.setTimeout(callback,500);
+window.setTimeout(callback,1000);
 
 }
 

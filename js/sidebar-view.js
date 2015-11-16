@@ -49,7 +49,7 @@ var SidebarModel = function() {
 }
 
 ko.applyBindings(new SidebarModel())
-window.setTimeout(function(){$('#loading-overlay').toggle()}, 1500)
+window.setTimeout(function(){$('#loading-overlay').toggle()}, 2000)
 }
 
 var spreadsheetUrl = "https://spreadsheets.google.com/feeds/list/1vqi68E7RdQyBpREXh4tTfWQA9P2H00bC2zzQE3vm430/od6/public/values?alt=json";
