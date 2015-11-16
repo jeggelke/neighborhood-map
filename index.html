@@ -7,20 +7,34 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" charset="utf-8">
     <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
-    <script src="js/map.js" charset="utf-8"></script>
+    <script src="bower_components/knockout/dist/knockout.js" charset="utf-8"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   </head>
   <body>
 <div class="container-fluid box">
     <div class="row">
-    <div class="column col-xs-3 text-center" id="sidebar">
-      <h3>This is the sidebar</h3>
+    <div class="column col-xs-4 text-center" id="sidebar">
+      <input type="search" class="form-control search-bar" placeholder="Filter results..." data-bind="event:{keyup: filterPlaces}, textInput: filterParameter">
+      <ul data-bind="foreach: placeList" class="place-list">
+        <li><h4 data-bind="click: $parent.switchPlace, text: name"></h4></li>
+      </ul>
+      <div class="current-place-container">
+        <div data-bind="with: currentPlace">
+          <h3 data-bind="text: name"></h3>
+          <p data-bind="text: description"></p>
+          <p><h4>Don't miss</h4><span data-bind="text: dontmiss"></span></p>
+        </div>
+      </div>
     </div>
-    <div class="map-container column col-xs-9 no-side-padding">
+    <div class="map-container column col-xs-8 no-side-padding">
       <div class="map-canvas" id="map-canvas"></div>
     </div>
   </div>
 </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPptS2lsMK0rAcxj3R3urgPO-Sq12gZcw&callback=initMap"></script>
+<div id="loading-overlay"><div class="text"><h3>Loading the neighborhood!</h3></div></div>
+    <script src="js/map.js" charset="utf-8"></script>
+    <script src="js/sidebar-view.js" charset="utf-8"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPptS2lsMK0rAcxj3R3urgPO-Sq12gZcw&libraries=places"></script>
   </body>
 </html>
