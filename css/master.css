@@ -123,3 +123,8 @@ a {
   padding: 100px;
   border-radius: 4px;
 }
+
+#pano {
+  width: 300px;
+  height: 200px;
+}

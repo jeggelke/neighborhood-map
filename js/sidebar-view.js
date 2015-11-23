@@ -11,6 +11,8 @@ var Place = function(data) {
   this.tags = ko.observableArray(data.tags);
   this.marker = ko.observable(data.marker);
   this.dontmiss = ko.observable(data.dontmiss);
+  this.lat = ko.observable(data.lat);
+  this.lng = ko.observable(data.lng);
 }
 
 var SidebarModel = function() {
@@ -26,9 +28,7 @@ var SidebarModel = function() {
 	self.switchPlace = function(){
 		self.currentPlace(this);
     queryGooglePlaces(this.name(), centerMarker);
-    var infoContent = this.name();
-    changeInfoWindow(this.marker(), infoContent);
-    toggleBounce(this.marker());
+    changeInfoWindow(this.marker(), this.name(), this.rating(), this.lat(), this.lng());
 	};
 
   self.filterParameter = ko.observable();
@@ -60,5 +60,6 @@ $.getJSON(spreadsheetUrl, function(data) {
    coolPlaces.push({'name':this.gsx$name.$t, 'tags': tempTagArray, 'description':this.gsx$description.$t, 'rating':this.gsx$rating.$t, 'dontmiss': this.gsx$dontmiss.$t, 'lat': '', 'lng': '', 'visible': true, 'marker': null});
  });
 
- initMap(myNeighborhood, function() {initializeData();});
+ initMap(myNeighborhood);
+ initMarkers(function() {initializeData();})
 });
