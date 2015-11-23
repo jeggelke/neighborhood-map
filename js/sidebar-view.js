@@ -1,5 +1,6 @@
 var coolNeighborhood = 'Brooklyn Heights';
 
+// create global array to be used throughout
 var coolPlaces = [];
 
 var initializeData = function(){
@@ -17,8 +18,8 @@ var Place = function(data) {
 
 var SidebarModel = function() {
 	var self = this;
-	self.placeList = ko.observableArray([]);
-
+  // create and populate observable array from coolPlaces
+  self.placeList = ko.observableArray([]);
 	coolPlaces.forEach(function(placeItem, i){
 		self.placeList.push(new Place(placeItem));
 	})
@@ -37,6 +38,7 @@ var SidebarModel = function() {
     self.placeList([]);
     // Search through object - http://stackoverflow.com/a/5288882/3083666
     $.each(coolPlaces, function(i, v) {
+      // use toLowerCase to make filtering easier on user
           if (v.name.toLowerCase().search(new RegExp(self.filterParameter().toLowerCase())) != -1) {
               self.placeList.push(new Place(v));
               coolPlaces[i]['visible'] = true;
@@ -49,13 +51,16 @@ var SidebarModel = function() {
 }
 
 ko.applyBindings(new SidebarModel())
+// stop user from clicking on locations until everything is loaded
 window.setTimeout(function(){$('#loading-overlay').toggle()}, 2000)
 }
 
+// Data is returned from Google Sheet as JSON
 var spreadsheetUrl = "https://spreadsheets.google.com/feeds/list/1vqi68E7RdQyBpREXh4tTfWQA9P2H00bC2zzQE3vm430/od6/public/values?alt=json";
 $.getJSON(spreadsheetUrl, function(data) {
  var entry = data.feed.entry;
  $(entry).each(function(){
+   // change comma separated list to array to be added to coolPlaces object
    var tempTagArray = this.gsx$tags.$t.split(', ');
    coolPlaces.push({'name':this.gsx$name.$t, 'tags': tempTagArray, 'description':this.gsx$description.$t, 'rating':this.gsx$rating.$t, 'dontmiss': this.gsx$dontmiss.$t, 'lat': '', 'lng': '', 'visible': true, 'marker': null});
  });

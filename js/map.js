@@ -21,7 +21,6 @@ function initMarkers(callback){
   coolPlaces.forEach(function(e, i){
     queryGooglePlaces(e.name, placeMarkers, i);
   })
-
 window.setTimeout(callback,1000);
 }
 
@@ -47,8 +46,6 @@ function placeMarkers(results, status, i) {
       coolPlaces[i]['marker'] = marker;
       infowindow = new google.maps.InfoWindow();
       var placeLatLng = coolPlaces[i]['lat'] + ', ' + coolPlaces[i]['lng'];
-      var streetViewUrl = 'https://maps.googleapis.com/maps/api/streetview?size=200x100&location=' + placeLatLng + '&key=' + streetApiKey;
-      var streetViewDiv = '<img src="' + streetViewUrl + '">';
       marker.addListener('click', function() {
         changeInfoWindow(marker, coolPlaces[i]['name'], coolPlaces[i]['rating'], coolPlaces[i]['lat'], coolPlaces[i]['lng']);
         toggleBounce(marker);
@@ -62,6 +59,7 @@ function placeMarkers(results, status, i) {
     });
 }
 
+// adds panorama street view
 function addStreetView (posLat, posLng){
   var panorama = new google.maps.StreetViewPanorama(
       document.getElementById('pano'), {
@@ -79,6 +77,7 @@ function addStreetView (posLat, posLng){
   map.setStreetView(panorama);
 }
 
+// closes, changes data, and reopens infowindow
 function changeInfoWindow (marker, name, rating, lat, lng) {
   infowindow.close();
   infowindow.setContent('<h3>' + name + '</h3>My rating: ' + rating + '/10' + '<br><div id="pano"></div>');
