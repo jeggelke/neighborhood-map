@@ -15,6 +15,19 @@ var Place = function(data) {
   this.lat = ko.observable(data.lat);
   this.lng = ko.observable(data.lng);
 //  console.log(coolPlaces[0]['lat'])
+
+
+}
+
+var TempPlace = function(data) {
+  var self = this;
+  this.name = ko.observable(data.name);
+  this.description = ko.observable(data.description);
+  this.rating = ko.observable(data.rating);
+  this.tags = ko.observableArray(data.tags);
+  this.dontmiss = ko.observable(data.dontmiss);
+  this.lat = ko.observable(data.lat);
+  this.lng = ko.observable(data.lng);
   var marker = new google.maps.Marker({
         position: new google.maps.LatLng(data.lat, data.lng),
         title: data.name,
@@ -23,9 +36,8 @@ var Place = function(data) {
     });
 
     google.maps.event.addListener(marker, 'click', function() {
-
+      console.log(this)
       }.bind(this));
-
   this.marker = ko.observable(marker);
 }
 
@@ -33,22 +45,26 @@ var SidebarModel = function() {
 	var self = this;
   // create and populate observable array from coolPlaces
   self.placeList = ko.observableArray([]);
+  self.filteredPlaceList = ko.observableArray([]);
 	coolPlaces.forEach(function(placeItem, i){
 		self.placeList.push(new Place(placeItem));
-	})
+    self.filteredPlaceList.push(new TempPlace(placeItem));
+	});
 
-	self.currentPlace = ko.observable(this.placeList()[0]);
+
+	self.currentPlace = ko.observable(this.filteredPlaceList()[0]);
 
 	self.switchPlace = function(){
-		self.currentPlace(this);
+    console.log(this)
+    self.currentPlace(this);
     self.toggleBounce(this.marker());
     self.changeInfoWindow(this.name(), this.rating(), this.marker(), this.lat(), this.lng());
     queryGooglePlaces(this.name(), centerMarker);
 	};
 
   self.stopBounces = function() {
-    this.placeList().forEach(function(e, i) {
-      self.placeList()[i].marker().setAnimation(null);
+    this.filteredPlaceList().forEach(function(e, i) {
+      self.filteredPlaceList()[i].marker().setAnimation(null);
     })
   }
 
@@ -69,14 +85,14 @@ var SidebarModel = function() {
 
 
   self.filterPlaces = function(){
-
+    self.filteredPlaceList([]);
     // Search through object - http://stackoverflow.com/a/5288882/3083666
-    $.each(coolPlaces, function(i, v) {
+    $.each(self.placeList(), function(i, v) {
       console.log(v)
       // use toLowerCase to make filtering easier on user
 //      console.log(self.tempPlaceList())
           if (v.name().toLowerCase().search(new RegExp(self.filterParameter().toLowerCase())) != -1) {
-              self.tempPlaceList.push(new Place(v));
+              self.filteredPlaceList.push(new TempPlace(v));
               self.placeList()[i]['visible'] = true;
               return;
           } else {self.placeList()[i]['visible'] = false;}
