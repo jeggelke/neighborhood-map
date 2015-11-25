@@ -1,50 +1,42 @@
-//declare api keys
-var googleApiKey = 'AIzaSyCPptS2lsMK0rAcxj3R3urgPO-Sq12gZcw';
-var streetApiKey = 'AIzaSyCfGdY1eZFJXRi5T-18TrfKrSVjN9k9LOc';
-
 //declare neighborhood
 var myNeighborhood = 'Brooklyn Heights, Brooklyn, NY';
 
 //map dependencies
 var geocoder;
-var map;
-function initMap(address) {
-  // Create a map object and specify the DOM element for display.
-  map = new google.maps.Map(document.getElementById('map-canvas'), {
-    center: {lat: 40.6960105, lng: -73.9932872},
-    scrollwheel: false,
-    zoom: 15
-  });
+
+function callbackPause(callback){
+callback();
 }
 
-function initMarkers(callback){
-  coolPlaces.forEach(function(e, i){
-    queryGooglePlaces(e.name, placeMarkers, i);
-  })
-window.setTimeout(callback,1000);
-}
-
-function queryGooglePlaces(placeName, functionToRun, i){
+function queryGooglePlaces(placeName, callback, i, innerCallback){
   var service = new google.maps.places.PlacesService(map);
   var request = {
     query: placeName
   };
-  service.textSearch(request, function(results, status){functionToRun(results, status, i)});
+  service.textSearch(request, function(results, status){callback(results, status, i)});
 }
-var infowindow;
-function placeMarkers(results, status, i) {
+var pushLatLngIteration = 0;
+function pushLatLng(results, status, i) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     // add lat, lng to array for retrieval later
     if (coolPlaces[i].lat == "") {
       coolPlaces[i]['lat'] = results[0].geometry.location.lat();
       coolPlaces[i]['lng'] = results[0].geometry.location.lng();
     }
-    var marker = new google.maps.Marker({
+    pushLatLngIteration += 1;
+    // once this loop finishes and lat and lng are stored, run initializeModel
+    if (pushLatLngIteration == coolPlaces.length) {initializeModel()}
+  }
+
+
+/*
+var infowindow;
+infowindow = new google.maps.InfoWindow();
+var marker = new google.maps.Marker({
         map: map,
         position: {lat: coolPlaces[i]['lat'], lng: coolPlaces[i]['lng']}
       });
       coolPlaces[i]['marker'] = marker;
-      infowindow = new google.maps.InfoWindow();
       var placeLatLng = coolPlaces[i]['lat'] + ', ' + coolPlaces[i]['lng'];
       marker.addListener('click', function() {
         changeInfoWindow(marker, coolPlaces[i]['name'], coolPlaces[i]['rating'], coolPlaces[i]['lat'], coolPlaces[i]['lng']);
@@ -54,9 +46,12 @@ function placeMarkers(results, status, i) {
         $('#place-dont-miss').html(coolPlaces[i]['dontmiss']);
       });
     }
+
     google.maps.event.addListener(infowindow,'closeclick',function(){
       stopBounces();
     });
+
+*/
 }
 
 // adds panorama street view
@@ -81,9 +76,8 @@ function addStreetView (posLat, posLng){
 function changeInfoWindow (marker, name, rating, lat, lng) {
   infowindow.close();
   infowindow.setContent('<h3>' + name + '</h3>My rating: ' + rating + '/10' + '<br><div id="pano"></div>');
-  toggleBounce(marker);
-  infowindow.open(map, marker);
-  addStreetView(lat, lng);
+//  infowindow.open(map, marker);
+//  addStreetView(lat, lng);
 }
 
 function centerMarker(results, status) {
@@ -101,14 +95,8 @@ function displayFilteredMarkers() {
   }
 }
 
-function stopBounces() {
-  coolPlaces.forEach(function(e, i) {
-    coolPlaces[i]['marker'].setAnimation(null);
-  })
-}
 
 function toggleBounce(e) {
-    stopBounces();
     e.setAnimation(google.maps.Animation.BOUNCE);
 }
 

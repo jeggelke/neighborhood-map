@@ -2,18 +2,31 @@ var coolNeighborhood = 'Brooklyn Heights';
 
 // create global array to be used throughout
 var coolPlaces = [];
+var initializeModel = function(){
 
-var initializeData = function(){
+
 var Place = function(data) {
   var self = this;
   this.name = ko.observable(data.name);
   this.description = ko.observable(data.description);
   this.rating = ko.observable(data.rating);
   this.tags = ko.observableArray(data.tags);
-  this.marker = ko.observable(data.marker);
   this.dontmiss = ko.observable(data.dontmiss);
   this.lat = ko.observable(data.lat);
   this.lng = ko.observable(data.lng);
+//  console.log(coolPlaces[0]['lat'])
+  var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(data.lat, data.lng),
+        title: data.name,
+        map: map,
+        draggable: true
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+
+      }.bind(this));
+
+  this.marker = ko.observable(marker);
 }
 
 var SidebarModel = function() {
@@ -28,9 +41,29 @@ var SidebarModel = function() {
 
 	self.switchPlace = function(){
 		self.currentPlace(this);
+    self.toggleBounce(this.marker());
+    self.changeInfoWindow(this.name(), this.rating(), this.marker(), this.lat(), this.lng());
     queryGooglePlaces(this.name(), centerMarker);
-    changeInfoWindow(this.marker(), this.name(), this.rating(), this.lat(), this.lng());
 	};
+
+  self.stopBounces = function() {
+    this.placeList().forEach(function(e, i) {
+      self.placeList()[i].marker().setAnimation(null);
+    })
+  }
+
+  self.toggleBounce = function(marker) {
+    self.stopBounces();
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+
+  self.changeInfoWindow = function(name, rating, marker, lat, lng) {
+    infowindow.close();
+    infowindow.setContent('<h3>' + name + '</h3>My rating: ' + rating + '/10' + '<br><div id="pano"></div>');
+    console.log(lat + ', ' + lng);
+    infowindow.open(map, marker);
+    addStreetView(lat, lng);
+  }
 
   self.filterParameter = ko.observable();
 
@@ -52,10 +85,11 @@ var SidebarModel = function() {
 
 ko.applyBindings(new SidebarModel())
 // stop user from clicking on locations until everything is loaded
-window.setTimeout(function(){$('#loading-overlay').toggle()}, 2000)
+$('#loading-overlay').toggle();
 }
 
 // Data is returned from Google Sheet as JSON
+function getDataFromSheet(callback){
 var spreadsheetUrl = "https://spreadsheets.google.com/feeds/list/1vqi68E7RdQyBpREXh4tTfWQA9P2H00bC2zzQE3vm430/od6/public/values?alt=json";
 $.getJSON(spreadsheetUrl, function(data) {
  var entry = data.feed.entry;
@@ -64,7 +98,47 @@ $.getJSON(spreadsheetUrl, function(data) {
    var tempTagArray = this.gsx$tags.$t.split(', ');
    coolPlaces.push({'name':this.gsx$name.$t, 'tags': tempTagArray, 'description':this.gsx$description.$t, 'rating':this.gsx$rating.$t, 'dontmiss': this.gsx$dontmiss.$t, 'lat': '', 'lng': '', 'visible': true, 'marker': null});
  });
-
- initMap(myNeighborhood);
- initMarkers(function() {initializeData();})
+// initMap();
+// initMarkers(function() {initializeData();})
+callback();
 });
+};
+
+// adds panorama street view
+function addStreetView (posLat, posLng){
+  var panorama = new google.maps.StreetViewPanorama(
+      $('#pano')[0], {
+        position: {lat:posLat, lng: posLng},
+        pov: {
+          heading: 34,
+          pitch: 10
+        },
+        addressControl: false,
+        linksControl: false,
+        panControl: false,
+        enableCloseButton: false,
+        fullScreenControl: false
+      });
+  map.setStreetView(panorama);
+}
+
+var map;
+var infowindow;
+function initMap(){
+map = new google.maps.Map(document.getElementById('map-canvas'), {
+  center: {lat: 40.6960105, lng: -73.9932872},
+  scrollwheel: false,
+  zoom: 15
+});
+
+//InfoWindow information
+infowindow = new google.maps.InfoWindow();
+
+getDataFromSheet(function() {initDataArray(function(){consoleLogCallback()})})
+}
+
+function initDataArray(callback){
+  coolPlaces.forEach(function(e, i){
+      queryGooglePlaces(e.name, pushLatLng, i);
+  })
+}
