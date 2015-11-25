@@ -54,46 +54,11 @@ var marker = new google.maps.Marker({
 */
 }
 
-// adds panorama street view
-function addStreetView (posLat, posLng){
-  var panorama = new google.maps.StreetViewPanorama(
-      document.getElementById('pano'), {
-        position: {lat:posLat, lng: posLng},
-        pov: {
-          heading: 34,
-          pitch: 10
-        },
-        addressControl: false,
-        linksControl: false,
-        panControl: false,
-        enableCloseButton: false,
-        fullScreenControl: false
-      });
-  map.setStreetView(panorama);
-}
 
-// closes, changes data, and reopens infowindow
-function changeInfoWindow (marker, name, rating, lat, lng) {
-  infowindow.close();
-  infowindow.setContent('<h3>' + name + '</h3>My rating: ' + rating + '/10' + '<br><div id="pano"></div>');
-//  infowindow.open(map, marker);
-//  addStreetView(lat, lng);
-}
 
-function centerMarker(results, status) {
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-      map.setCenter(results[0].geometry.location);
-  }
-}
 
-// Sets the map on all markers in the array.
-function displayFilteredMarkers() {
-  for (var i = 0; i < coolPlaces.length; i++) {
-    if (coolPlaces[i]['visible'] == true) {
-      coolPlaces[i]['marker'].setMap(map);
-    } else {coolPlaces[i]['marker'].setMap(null);}
-  }
-}
+
+
 
 
 function toggleBounce(e) {

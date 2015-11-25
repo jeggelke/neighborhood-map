@@ -67,19 +67,35 @@ var SidebarModel = function() {
 
   self.filterParameter = ko.observable();
 
+
   self.filterPlaces = function(){
-    self.placeList([]);
+
     // Search through object - http://stackoverflow.com/a/5288882/3083666
     $.each(coolPlaces, function(i, v) {
+      console.log(v)
       // use toLowerCase to make filtering easier on user
-          if (v.name.toLowerCase().search(new RegExp(self.filterParameter().toLowerCase())) != -1) {
-              self.placeList.push(new Place(v));
-              coolPlaces[i]['visible'] = true;
+//      console.log(self.tempPlaceList())
+          if (v.name().toLowerCase().search(new RegExp(self.filterParameter().toLowerCase())) != -1) {
+              self.tempPlaceList.push(new Place(v));
+              self.placeList()[i]['visible'] = true;
               return;
-          } else {coolPlaces[i]['visible'] = false;}
+          } else {self.placeList()[i]['visible'] = false;}
       });
-      displayFilteredMarkers();
+      self.displayFilteredMarkers();
       return true;
+    }
+
+
+    // Sets the map on all markers in the array.
+    self.displayFilteredMarkers = function() {
+      for (var i = 0; i < self.placeList().length; i++) {
+        if (self.placeList()[i]['visible'] == true) {
+          console.log(self.placeList()[i].marker())
+          self.placeList()[i].marker().setMap(map);
+        } else {
+          self.placeList()[i].marker().setMap(null);
+        }
+      }
     }
 }
 
@@ -141,4 +157,28 @@ function initDataArray(callback){
   coolPlaces.forEach(function(e, i){
       queryGooglePlaces(e.name, pushLatLng, i);
   })
+}
+
+// adds panorama street view
+function addStreetView (posLat, posLng){
+  var panorama = new google.maps.StreetViewPanorama(
+      document.getElementById('pano'), {
+        position: {lat:posLat, lng: posLng},
+        pov: {
+          heading: 34,
+          pitch: 10
+        },
+        addressControl: false,
+        linksControl: false,
+        panControl: false,
+        enableCloseButton: false,
+        fullScreenControl: false
+      });
+  map.setStreetView(panorama);
+}
+
+function centerMarker(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+      map.setCenter(results[0].geometry.location);
+  }
 }
