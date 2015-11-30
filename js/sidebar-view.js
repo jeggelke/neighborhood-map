@@ -22,7 +22,7 @@ var initializeModel = function(){
           position: new google.maps.LatLng(data.lat, data.lng),
           title: data.name,
           map: map,
-          draggable: true
+          draggable: false
       });
 
       google.maps.event.addListener(marker, 'click', function() {
@@ -129,7 +129,7 @@ function getDataFromSheet(callback){
     } else {
         error = 'Uncaught Error.\n' + text.responseText;
     }
-    var errorText = 'Error, error. Does not compute: ' + error;
+    var errorText = 'Error, error. Does not compute: ' + error + ' Please try again later.';
     console.log(errorText);
     $('#loading-overlay .text h3').html(errorText);
   }
