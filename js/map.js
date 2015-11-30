@@ -5,7 +5,7 @@ var myNeighborhood = 'Brooklyn Heights, Brooklyn, NY';
 var geocoder;
 
 function callbackPause(callback){
-callback();
+  callback();
 }
 
 function queryGooglePlaces(placeName, callback, i, innerCallback){
@@ -30,13 +30,13 @@ function pushLatLng(results, status, i) {
 }
 
 function toggleBounce(e) {
-    e.setAnimation(google.maps.Animation.BOUNCE);
+  e.setAnimation(google.maps.Animation.BOUNCE);
 }
 
 //escape to close infowindow
 $(document).keyup(function(e){
-    if(e.which == 27){
-        infowindow.close();
-        stopBounces();
-    }
+  if(e.which == 27){
+    infowindow.close();
+    stopBounces();
+  }
 });
