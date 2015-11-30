@@ -1,8 +1,10 @@
-html, body {
+html,
+body {
    height: 100%;
 }
 
-.wrapper, .row {
+.wrapper,
+.row {
    height: 100%;
    margin-left:0;
    margin-right:0;
@@ -57,8 +59,10 @@ a {
    margin-right:0;
 }
 
-.wrapper:before, .wrapper:after,
-.column:before, .column:after {
+.wrapper:before,
+.wrapper:after,
+.column:before,
+.column:after {
     content: "";
     display: table;
 }
