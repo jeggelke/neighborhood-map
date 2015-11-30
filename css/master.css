@@ -1,6 +1,7 @@
 html,
 body {
    height: 100%;
+   padding-top: 51px;
 }
 
 .wrapper,
@@ -8,6 +9,9 @@ body {
    height: 100%;
    margin-left:0;
    margin-right:0;
+}
+.main-area {
+  margin-top: 51px;
 }
 
 #map-canvas,
@@ -21,6 +25,7 @@ body {
   background-color: #423F3A;
   color: #fff;
   overflow-y: scroll;
+  height: 100%;
 }
 
 .search-bar {
@@ -93,10 +98,7 @@ a {
 /* center and adjust the sidebar contents on smaller devices */
 @media (max-width: 768px) {
   #sidebar {
-    text-align:center;
-    margin:0 auto;
-    margin-top:30px;
-    font-size:26px;
+
   }
 }
 
@@ -116,6 +118,7 @@ a {
   background-color: rgba(0,0,0,.6);
   text-align: center;
   position: absolute;
+  top: 0px;
 }
 
 #loading-overlay .text {
@@ -131,4 +134,42 @@ a {
 #pano {
   width: 300px;
   height: 200px;
+}
+
+/* collapsed sidebar styles */
+@media screen and (max-width: 767px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all 0.25s ease-out;
+    -moz-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+  }
+  .row-offcanvas-right
+  .sidebar-offcanvas {
+    right: -41.6%;
+  }
+
+  .row-offcanvas-left
+  .sidebar-offcanvas {
+    left: -50%;
+  }
+  .row-offcanvas-right.active {
+    right: 50%;
+  }
+  .row-offcanvas-left.active {
+    left: 50%;
+  }
+  .sidebar-offcanvas {
+    position: absolute;
+    top: 0;
+    width: 50%;
+  }
+  #sidebar {
+    padding-top:0;
+    position: absolute;
+    padding-left: 30px;
+  }
+  .map-container {
+    position: fixed !important;
+  }
 }

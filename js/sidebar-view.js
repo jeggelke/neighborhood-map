@@ -174,3 +174,10 @@ function makeInfoWindow(marker, name, rating, description){
       infoWindow.setContent (infoWindowText);
       infoWindow.open(map, marker);
 }
+
+//show navbar
+$(document).ready(function() {
+  $('[data-toggle=offcanvas]').click(function() {
+    $('.row-offcanvas').toggleClass('active');
+  });
+});

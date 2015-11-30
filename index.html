@@ -12,15 +12,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   </head>
   <body>
-<div class="container-fluid box">
-    <div class="row">
-    <div class="column col-xs-4 text-center" id="sidebar">
+    <!-- top navbar -->
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+         <div class="container">
+      	<div class="navbar-header">
+             <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+             </button>
+             <a class="navbar-brand" href="#">Brooklyn Heights</a>
+      	</div>
+         </div>
+      </div>
+<div class="container-fluid box main-area">
+    <div class="row row-offcanvas row-offcanvas-left">
+    <div class="column col-xs-6 col-sm-6 col-md-4 text-center sidebar-offcanvas" id="sidebar">
       <input type="search" class="form-control search-bar" placeholder="Filter results..." data-bind="textInput: filterPlaces">
       <ul data-bind="foreach: placeList" class="place-list">
         <li><h4 data-bind="click: $parent.switchPlace, text: name"></h4></li>
       </ul>
     </div>
-    <div class="map-container column col-xs-8 no-side-padding">
+    <div class="map-container column col-xs-12 col-sm-6 col-md-8 no-side-padding">
       <div class="map-canvas" id="map-canvas"></div>
     </div>
   </div>
