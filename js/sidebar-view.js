@@ -175,7 +175,7 @@ function makeInfoWindow(marker, name, rating, description){
       infoWindow.open(map, marker);
 }
 
-//show navbar
+//show navbar - http://www.bootply.com/88026#
 $(document).ready(function() {
   $('[data-toggle=offcanvas]').click(function() {
     $('.row-offcanvas').toggleClass('active');
