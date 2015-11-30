@@ -32,6 +32,14 @@ body {
   margin-top: 15px;
 }
 
+.clear-search {
+  margin: 5px auto auto 5px;
+}
+
+.clear-search:hover {
+  cursor: pointer;
+}
+
 .place-list {
   height: 300px;
   overflow-y: scroll;

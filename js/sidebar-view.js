@@ -4,9 +4,7 @@ var coolNeighborhood = 'Brooklyn Heights';
 var coolPlaces = [];
 var map;
 var infoWindow;
-//var self;
 var initializeModel = function(){
-
 
 var Place = function(data) {
   this.name = ko.observable(data.name);
@@ -80,6 +78,15 @@ ViewModel = function() {
     map.setCenter({lat: this.lat(), lng: this.lng()});
   };
 
+// clear filter box and remake placeList
+  $('.clear-search').click(function() {
+    $('.search-bar').val('');
+    self.placeList([]);
+    coolPlaces.forEach(function(placeItem, i){
+        self.placeList.push(new Place(placeItem));
+    });
+
+  });
 };
 ko.applyBindings(new ViewModel());
 // stop user from clicking on locations until everything is loaded
