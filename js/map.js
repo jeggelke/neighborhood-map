@@ -36,7 +36,6 @@ function toggleBounce(e) {
 //escape to close infowindow
 $(document).keyup(function(e){
   if(e.which == 27){
-    infowindow.close();
-    stopBounces();
+    infoWindow.close();
   }
 });

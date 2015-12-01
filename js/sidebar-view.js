@@ -1,5 +1,6 @@
 'use strict';
-
+var FOURSQUARE_API_KEY = 'YY5WFR5YP24J5QLLBT3W10FXLD1U0BK1WLD4EI3DEGQZKDTU';
+var FOURSQUARE_CLIENT_SECRET = 'OENRVRKIOXBIYF4QJWHIBAPF2AZTL42QE5S25QFGMWCJTLGU';
 var coolNeighborhood = 'Brooklyn Heights';
 
 // create global array to be used throughout
@@ -13,7 +14,6 @@ var initializeModel = function(){
     this.name = ko.observable(data.name);
     this.description = ko.observable(data.description);
     this.dontmiss = ko.observable(data.dontmiss);
-    this.rating = ko.observable(data.rating);
     this.tags = ko.observableArray(data.tags);
     this.lat = ko.observable(data.lat);
     this.lng = ko.observable(data.lng);
@@ -26,7 +26,7 @@ var initializeModel = function(){
       });
 
       google.maps.event.addListener(marker, 'click', function() {
-        makeInfoWindow(this.marker(), this.name(), this.rating(), this.description());
+        makeInfoWindow(this.marker(), this.name(), this.description());
         addStreetView(this.lat(), this.lng());
         map.setCenter({lat: this.lat(), lng: this.lng()});
       }.bind(this));
@@ -74,7 +74,7 @@ var initializeModel = function(){
     }, this);
 
     self.switchPlace = function(){
-      makeInfoWindow(this.marker(), this.name(), this.rating(), this.description());
+      makeInfoWindow(this.marker(), this.name(), this.description());
       addStreetView(this.lat(), this.lng());
       self.currentPlace(this);
       $('.row-offcanvas').toggleClass('active');
@@ -133,17 +133,6 @@ function getDataFromSheet(callback){
     console.log(errorText);
     $('#loading-overlay .text h3').html(errorText);
   }
-/*
-  $.getJSON(spreadsheetUrl, function(data) {
-   var entry = data.feed.entry;
-   $(entry).each(function(){
-     // change comma separated list to array to be added to coolPlaces object
-     var tempTagArray = this.gsx$tags.$t.split(', ');
-     coolPlaces.push({'name':this.gsx$name.$t, 'tags': tempTagArray, 'description':this.gsx$description.$t, 'rating':this.gsx$rating.$t, 'dontmiss': this.gsx$dontmiss.$t, 'lat': '', 'lng': '', 'visible': true, 'marker': null});
-   });
-   callback();
- });
-*/
 }
 
 // adds panorama street view
@@ -188,14 +177,17 @@ function centerMarker(results, status) {
   }
 }
 
-function makeInfoWindow(marker, name, rating, description){
+function makeInfoWindow(marker, name, description){
+  var foursquareUrl,
+      foursquareRating;
+  callFoursquare(name, foursquareUrl, foursquareRating);
   infoWindow = infoWindow || new google.maps.InfoWindow({content: ''});
   marker.setAnimation(google.maps.Animation.BOUNCE);
   setTimeout(function() {
     marker.setAnimation(null);
   }, 1500);
 
-  var infoWindowText = '<div><strong>' + name + '</strong></div><div>' + description + '</div><div><strong>Rating</strong>: ' + rating + ' out of 10</div><div id="pano"></div>';
+  var infoWindowText = '<div><strong>' + name + '</strong></div><div>' + description + '</div><div><strong><a id="foursquare-url" href="" target="_blank"><img src="assets/foursquare_logo.png">Foursquare Rating</a></strong>: <span id="foursquare-rating"></span></div><div id="pano"></div>';
   infoWindow.setContent (infoWindowText);
   infoWindow.open(map, marker);
 }
@@ -207,3 +199,42 @@ $(document).ready(function() {
     console.log('toggle active');
   });
 });
+
+function callFoursquare(place, foursquareId, foursquareRating){
+
+  var url = 'https://api.foursquare.com/v2/venues/search' +
+    '?client_id=' + FOURSQUARE_API_KEY +
+    '&client_secret=' + FOURSQUARE_CLIENT_SECRET +
+    '&v=20151130' +
+    '&ll=40.6960105, -73.9932872' +
+    '&limit=1' +
+    '&query=' + place;
+    //request to get venue id
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      success: function(data){getFoursquareData(data.response.venues[0].id);},
+      error: function(){
+        $('#foursquare-url').attr('href', '#');
+        $('#foursquare-rating').html('Foursquare Rating not available');
+      }
+    });
+    function getFoursquareData(id){
+      var url = 'https://api.foursquare.com/v2/venues/' + id + '?client_id=' + FOURSQUARE_API_KEY + '&client_secret=' + FOURSQUARE_CLIENT_SECRET + '&v=20151130'
+      //request to get url and rating
+      $.ajax({
+        url: url,
+        dataType: 'json',
+        success: function(data){
+          var venueUrl = data.response.venue.canonicalUrl;
+          var venueRating = data.response.venue.rating;
+          $('#foursquare-url').attr('href', venueUrl);
+          $('#foursquare-rating').html(venueRating + '/10');
+        },
+        error: function(){
+          $('#foursquare-url').attr('href', '#');
+          $('#foursquare-rating').html('Foursquare Rating not available');
+        }
+      });
+    }
+}
